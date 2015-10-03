@@ -129,9 +129,10 @@ Add this to twig template.
 
 ### Changing overlay images
 
-Add and edit this to your parameters.yml file.
+Add and edit this to your config.yml file.
 
-    mopa_barcode.overlay_images_path: Resources/qr_overlays
+    mopa_barcode:
+        overlay_images_path: "%kernel.root_dir%/Resources/qr_overlays"
 
 For each QR code level (size) you have to generate overlay image. Look in `Resources/qr_overlays' path of bundle for example overlay images.
 
