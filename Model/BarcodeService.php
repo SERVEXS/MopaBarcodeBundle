@@ -1,6 +1,7 @@
 <?php
 namespace Mopa\Bundle\BarcodeBundle\Model;
 
+use Symfony\Component\DependencyInjection\Container;
 use Monolog\Logger;
 use Imagine\Gd\Image;
 use Imagine\Image\ImagineInterface;
@@ -16,6 +17,11 @@ class BarcodeService{
      * @var array
      */
     private $types;
+    
+    /**
+     * @var Container
+     */
+    private $container;
 
     /**
      * @var ImagineInterface
@@ -51,8 +57,9 @@ class BarcodeService{
      * @var Logger
      */
     private $logger;
-
+    
     /**
+     * @param Container $container
      * @param ImagineInterface $imagine
      * @param $kernelcachedir
      * @param $kernelrootdir
@@ -60,14 +67,16 @@ class BarcodeService{
      * @param $webroot
      * @param Logger $logger
      */
-    public function __construct(ImagineInterface $imagine, $kernelcachedir, $kernelrootdir, $webdir, $webroot, Logger $logger){
+    public function __construct(Container $container, ImagineInterface $imagine, $kernelcachedir, $kernelrootdir, $webdir, $webroot, Logger $logger){
         $this->types = BarcodeTypes::getTypes();
+        $this->container = $container;
         $this->imagine = $imagine;
         $this->kernelcachedir = $kernelcachedir;
         $this->kernelrootdir = $kernelrootdir;
         $this->webdir = $webdir;
         $this->webroot = $webroot;
         $this->logger = $logger;
+        $this->getOverlayPath();
     }
 
     /**
@@ -126,18 +135,41 @@ class BarcodeService{
             $destination = imagecreatefrompng($file);
             $src = imagecreatefrompng($overlayImagePath);
 
-            $overlayImage = new Image($src);
-            $overlayImage->resize(new Box($width, $width));
-            $tmpFilePath = $this->kernelcachedir . DIRECTORY_SEPARATOR . sha1(time() . rand()) . '.png';
-            $overlayImage->save($tmpFilePath);
+            list($src_width) = getimagesize($overlayImagePath);
+            $overlayImageWidth = $src_width;
 
-            $src = imagecreatefrompng($tmpFilePath);
+            #$overlayImage = new Image($src);
+            #$overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
+            // $src = $overlayImage;
+            #$thumb = Imagick('myimage.gif');
 
-            $this->imagecopymerge_alpha($destination, $src, 0, 0, 0, 0, $width, $width, 100);
-            imagepng($destination, $file);
+            /* $new_image = imagecreatetruecolor($overlayImageWidth, $overlayImageWidth);
+              $white = imagecolorallocate($new_image, 0, 0, 0);
+              imagefill($new_image, 0, 0, $white);
+              imagecolortransparent($new_image, $white);
+
+              imagecopyresized($new_image, $src, 0, 0, 0, 0, $overlayImageWidth, $overlayImageWidth, imagesx($src), imagesy($src));
+
+              $src = $new_image;
+             */
+            /* $overlayImage = new Image($src);
+              $overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
+              $tmpFilePath = $this->kernelcachedir . DIRECTORY_SEPARATOR . sha1(time() . rand()) . '.png';
+              $overlayImage->save($tmpFilePath);
+              $src = imagecreatefrompng($tmpFilePath);
+             */
+
+
+
+            $xoffset = ($width - $overlayImageWidth) / 2;
+            $yoffset = ($width - $overlayImageWidth) / 2;
+
+            imagecopymerge($destination, $src, $xoffset, $yoffset, 0, 0, $overlayImageWidth, $overlayImageWidth, 100);
+            #imagepng($src, $file, 0);
+            imagepng($destination, $file, 9);
             imagedestroy($destination);
             imagedestroy($src);
-            unlink($tmpFilePath);
+            //unlink($tmpFilePath);
         }
     }
 
@@ -236,12 +268,13 @@ class BarcodeService{
     }
 
     /**
-     * @param $path
+     * @return string
      */
-    public function setOverlayPath($path)
+    protected function getOverlayPath()
     {
-        if ($path) {
-            $this->overlayPath = $this->kernelrootdir . DIRECTORY_SEPARATOR .  $path;
+        $overlayPath = $this->container->getParameter('mopa_barcode.overlay_images_path');
+        if ($overlayPath) {
+            $this->overlayPath = $overlayPath;
         } else {
             $this->overlayPath = __DIR__ . '/../Resources/qr_overlays';
         }
