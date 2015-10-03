@@ -8,10 +8,10 @@
     <parameters>
         <parameter key="mopa_barcode.barcode_service.class">Mopa\Bundle\BarcodeBundle\Model\BarcodeService</parameter>
         <parameter key="mopa_barcode.render.twig.extension.class">Mopa\Bundle\BarcodeBundle\Twig\Extension\BarcodeRenderExtension</parameter>
-        <parameter key="mopa_barcode.overlay_images_path"/>
     </parameters>
     <services>
         <service id="mopa_barcode.barcode_service" class="%mopa_barcode.barcode_service.class%">
+            <argument type="service" id="service_container" />
             <argument type="service" id="imagine" />
             <argument>%kernel.cache_dir%</argument>
             <argument>%kernel.root_dir%</argument>
@@ -19,9 +19,6 @@
             <argument>%imagine.web_root%</argument>
             <argument type="service" id="logger" />
             <tag name="monolog.logger" channel="mopa_barcode" />
-            <call method="setOverlayPath">
-                <argument>%mopa_barcode.overlay_images_path%</argument>
-            </call>
         </service>
 
         <service id="mopa_barcode.render.twig.extension" class="%mopa_barcode.render.twig.extension.class%">
