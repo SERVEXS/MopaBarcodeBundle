@@ -112,8 +112,8 @@ class BarcodeService{
                 $image = new Image(
                     $imageResource = Barcode::factory(
                         $type, 'image', $barcodeOptions, $rendererOptions
-                    null, null)->draw()
-                );
+                    )->draw()
+                , null, null);
                 $image->save($file);
         }
         return true;
