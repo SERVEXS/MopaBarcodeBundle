@@ -16,7 +16,7 @@ Is just a shot and shouldnt be considered to be perfect. Feel free to fork and P
     "require": {
         // ...
         "mopa/barcode-bundle": "dev-master",
-        "avalanche123/imagine-bundle": "dev-master", // handles image installation via requirements
+        "liip/imagine-bundle": "1.6.x-dev", // handles image installation via requirements
         // if you want to use the zend barcodes
         "zendframework/zend-barcode": "~2.3.7",
         "zendframework/zend-servicemanager": "~2.3.7",
