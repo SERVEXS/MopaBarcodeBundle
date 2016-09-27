@@ -20,10 +20,8 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('mopa_barcode');
 
-        $rootNode
-                ->children()
-                ->scalarNode('overlay_images_path')->end()
-        ;
+        $rootNode->children()
+                ->scalarNode('overlay_images_path')->end();
 
         return $treeBuilder;
     }
