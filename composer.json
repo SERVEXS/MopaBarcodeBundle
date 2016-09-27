@@ -29,7 +29,7 @@
       "phpunit/phpunit": "~4.6"
     },
     "suggest":  {
-        "avalanche123/imagine-bundle": "dev-master",
+        "liip/imagine-bundle": "1.6.x-dev",
         "zendframework/zend-barcode": "~2.3.7",
         "zendframework/zend-validator": "~2.3.7",
         "zendframework/zend-servicemanager": "~2.3.7"
