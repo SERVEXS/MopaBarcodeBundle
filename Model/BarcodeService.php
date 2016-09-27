@@ -112,7 +112,7 @@ class BarcodeService{
                 $image = new Image(
                     $imageResource = Barcode::factory(
                         $type, 'image', $barcodeOptions, $rendererOptions
-                    )->draw()
+                    null, null)->draw()
                 );
                 $image->save($file);
         }
@@ -138,7 +138,7 @@ class BarcodeService{
             list($src_width) = getimagesize($overlayImagePath);
             $overlayImageWidth = $src_width;
 
-            #$overlayImage = new Image($src);
+            #$overlayImage = new Image($src, null, null);
             #$overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
             // $src = $overlayImage;
             #$thumb = Imagick('myimage.gif');
@@ -152,7 +152,7 @@ class BarcodeService{
 
               $src = $new_image;
              */
-            /* $overlayImage = new Image($src);
+            /* $overlayImage = new Image($src, null, null);
               $overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
               $tmpFilePath = $this->kernelcachedir . DIRECTORY_SEPARATOR . sha1(time() . rand()) . '.png';
               $overlayImage->save($tmpFilePath);
