@@ -129,22 +129,52 @@ class BarcodeService{
         list($width) = getimagesize($file);
         $size = ($size < 1) ? 1 : $size;
         $originalLevelWidth = $width / $size;
+
         $overlayImagePath = $this->overlayPath . DIRECTORY_SEPARATOR . $originalLevelWidth . '.png';
+
         if (file_exists($overlayImagePath)) {
             $destination = imagecreatefrompng($file);
             $src = imagecreatefrompng($overlayImagePath);
-            $palette = new RGBColor();
-            $metaData = new MetadataBag();
-            $overlayImage = new Image($src, $palette, $metaData);
-            $overlayImage->resize(new Box($width, $width));
-            $tmpFilePath = $this->kernelcachedir . DIRECTORY_SEPARATOR . sha1(time() . rand()) . '.png';
-            $overlayImage->save($tmpFilePath);
-            $src = imagecreatefrompng($tmpFilePath);
-            $this->imagecopymerge_alpha($destination, $src, 0, 0, 0, 0, $width, $width, 100);
-            imagepng($destination, $file);
+
+            list($src_width) = getimagesize($overlayImagePath);
+            $overlayImageWidth = $src_width;
+
+            #$palette = new RGBColor();
+            #$metaData = new MetadataBag();
+            #$overlayImage = new Image($src, $palette, $metaData);
+            #$overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
+            // $src = $overlayImage;
+            #$thumb = Imagick('myimage.gif');
+
+            /* $new_image = imagecreatetruecolor($overlayImageWidth, $overlayImageWidth);
+              $white = imagecolorallocate($new_image, 0, 0, 0);
+              imagefill($new_image, 0, 0, $white);
+              imagecolortransparent($new_image, $white);
+
+              imagecopyresized($new_image, $src, 0, 0, 0, 0, $overlayImageWidth, $overlayImageWidth, imagesx($src), imagesy($src));
+
+              $src = $new_image;
+             */
+            /* $palette = new RGBColor();
+              $metaData = new MetadataBag();
+              $overlayImage = new Image($src, $palette, $metaData);
+              $overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
+              $tmpFilePath = $this->kernelcachedir . DIRECTORY_SEPARATOR . sha1(time() . rand()) . '.png';
+              $overlayImage->save($tmpFilePath);
+              $src = imagecreatefrompng($tmpFilePath);
+             */
+
+
+
+            $xoffset = ($width - $overlayImageWidth) / 2;
+            $yoffset = ($width - $overlayImageWidth) / 2;
+
+            imagecopymerge($destination, $src, $xoffset, $yoffset, 0, 0, $overlayImageWidth, $overlayImageWidth, 100);
+            #imagepng($src, $file, 0);
+            imagepng($destination, $file, 9);
             imagedestroy($destination);
             imagedestroy($src);
-            unlink($tmpFilePath);
+            //unlink($tmpFilePath);
         }
     }
     
