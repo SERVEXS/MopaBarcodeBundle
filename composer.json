@@ -23,7 +23,7 @@
         "php": ">=5.3.2",
         "symfony/framework-bundle": "~2.3",
         "symfony/twig-bundle": "~2.3|~3.1",
-        "liip/imagine-bundle": "2.0.x-dev",
+        "liip/imagine-bundle": "1.8.0",
         "zendframework/zend-barcode": "^2.6",
         "zendframework/zend-validator": "^2.8",
         "zendframework/zend-servicemanager": "^3.1"
