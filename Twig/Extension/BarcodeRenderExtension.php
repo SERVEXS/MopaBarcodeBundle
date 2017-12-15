@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Twig extension for barcodes 
+ * Twig extension for barcodes
  *
  * @author Philipp A. Mohrenweiser<phiamo@googlemail.com>
  * @copyright 2011 Philipp Mohrenweiser
@@ -44,8 +44,8 @@ class BarcodeRenderExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'mopa_barcode_url' => new \Twig_Function_Method($this, 'url'),
-            'mopa_barcode_path' => new \Twig_Function_Method($this, 'path'),
+            'mopa_barcode_url' => new \Twig_SimpleFilter($this, 'url'),
+            'mopa_barcode_path' => new \Twig_SimpleFilter($this, 'path'),
         );
     }
 
