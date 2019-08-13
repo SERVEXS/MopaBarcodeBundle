@@ -1,10 +1,22 @@
 <?php
 
-namespace Dimass\SupportPlazaBundle\Twig;
+/**
+ * Twig extension for barcodes
+ *
+ * @author Philipp A. Mohrenweiser<phiamo@googlemail.com>
+ * @copyright 2011 Philipp Mohrenweiser
+ * @license http://www.apache.org/licenses/LICENSE-2.0.html
+ */
+
+namespace Mopa\Bundle\BarcodeBundle\Twig\Extension;
 
 use Mopa\Bundle\BarcodeBundle\Model\BarcodeService;
 use Twig\TwigFunction;
 
+/**
+ * Class BarcodeRenderExtension
+ * @package Mopa\Bundle\BarcodeBundle\Twig\Extension
+ */
 class BarcodeRenderExtension extends \Twig_Extension
 {
     /**
