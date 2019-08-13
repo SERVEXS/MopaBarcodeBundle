@@ -1,29 +1,19 @@
 <?php
 
-/**
- * Twig extension for barcodes
- *
- * @author Philipp A. Mohrenweiser<phiamo@googlemail.com>
- * @copyright 2011 Philipp Mohrenweiser
- * @license http://www.apache.org/licenses/LICENSE-2.0.html
- */
-
-namespace Mopa\Bundle\BarcodeBundle\Twig\Extension;
+namespace Dimass\SupportPlazaBundle\Twig;
 
 use Mopa\Bundle\BarcodeBundle\Model\BarcodeService;
+use Twig\TwigFunction;
 
-/**
- * Class BarcodeRenderExtension
- * @package Mopa\Bundle\BarcodeBundle\Twig\Extension
- */
 class BarcodeRenderExtension extends \Twig_Extension
 {
-
+    /**
+     * @var BarcodeService
+     */
     protected $bs;
 
     /**
      * @param BarcodeService $bs
-     * @internal param \Knp\Menu\Twig\Helper $helper
      */
     public function __construct(BarcodeService $bs)
     {
@@ -35,18 +25,17 @@ class BarcodeRenderExtension extends \Twig_Extension
      */
     public function getName()
     {
-        return 'mopa_barcode_render';
+        return 'dimass_barcode_render';
     }
 
     /**
      * @return array
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
-        return array(
-            'mopa_barcode_url' => new \Twig_SimpleFunction('url', array($this, 'url')),
-            //'mopa_barcode_path' => new \Twig_SimpleFunction('path', array($this, 'path')),
-        );
+        return [
+            new TwigFunction('mopa_barcode_url', [$this, 'url']),
+        ];
     }
 
     /**
@@ -55,7 +44,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param array $options
      * @return mixed|string
      */
-    public function url($type, $text, $options = array())
+    public function url($type, $text, $options = [])
     {
         return $this->get($type, $text, false, $options);
     }
@@ -66,7 +55,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param array $options
      * @return mixed|string
      */
-    public function path($type, $text, $options = array())
+    public function path($type, $text, $options = [])
     {
         return $this->get($type, $text, true, $options);
     }
@@ -78,7 +67,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param array $options
      * @return mixed|string
      */
-    protected function get($type, $text, $absolute, $options = array())
+    protected function get($type, $text, $absolute, $options = [])
     {
         return $this->bs->get($type, urlencode($text), $absolute, $options);
     }
