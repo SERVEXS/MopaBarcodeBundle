@@ -14,29 +14,38 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Mopa\\Bundle\\BarcodeBundle": ""
+        "psr-4": {
+            "Mopa\\Bundle\\BarcodeBundle\\": "src",
+            "Mopa\\BarcodeBundle\\Tests\\": "Tests"
         }
     },
-    "target-dir": "Mopa/Bundle/BarcodeBundle",
     "require": {
-        "php": ">=7.1",
-        "symfony/framework-bundle": ">=3.0",
-        "symfony/twig-bundle": "~2.3|~3.1",
-        "liip/imagine-bundle": "1.8.0",
-        "zendframework/zend-barcode": "^2.6",
-        "zendframework/zend-validator": "^2.8",
-        "zendframework/zend-servicemanager": "^3.1"
+        "php": ">=7.4",
+        "symfony/framework-bundle": "^3.0|^4.4",
+        "symfony/twig-bundle": "~3.1|^4.4",
+        "symfony/form": "~3.1|^4.4",
+        "liip/imagine-bundle": "^1.8.0|^2.0",
+        "laminas/laminas-barcode": "^2.6",
+        "laminas/laminas-validator": "^2.8",
+        "laminas/laminas-servicemanager": "^3.1",
+        "twig/twig": "~1.14",
+        "ext-gd": "*"
     },
     "require-dev": {
-      "phpunit/phpunit": "~4.6"
+        "phpunit/phpunit": "~9.5",
+        "symplify/easy-coding-standard": "^10.2"
     },
-    "suggest":  {
+    "suggest": {
         "symfony/monolog-bundle": "^1.0"
     },
-     "extra": {
+    "scripts": {
+        "tests": "phpunit tests",
+        "lint-dry": "ecs check src",
+        "lint": "ecs check src --fix"
+    },
+    "extra": {
         "branch-alias": {
-            "dev-master": "1.6.x"
+            "dev-master": "3.0.x"
         }
     }
 }
