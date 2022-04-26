@@ -13,5 +13,5 @@ atlassian-ide-plugin.xml
 # Typisch Mac
 .DS_Store
 
-.composer.lock
+composer.lock
 .phpunit.result.cache
