@@ -2,30 +2,25 @@
 
 namespace Mopa\Bundle\BarcodeBundle\Model;
 
-use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Imagine\Gd\Image;
-use Imagine\Image\ImagineInterface;
 use Imagine\Image\Box;
+use Imagine\Image\ImagineInterface;
 use Imagine\Image\Metadata\MetadataBag;
-use Imagine\Image\Palette\RGB as RGBColor; //PaletteInterface
+use Imagine\Image\Palette\RGB as RGBColor;
 use Laminas\Barcode\Barcode;
+use Psr\Log\LoggerInterface; //PaletteInterface
+use Symfony\Component\DependencyInjection\Container;
 
-class BarcodeService{
+class BarcodeService
+{
     /**
-     * @var array
+     * @var array<int|string,string>
      */
     private $types;
 
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
-    /**
-     * @var ImagineInterface
-     */
-    private $imagine;
+    private ImagineInterface $imagine;
 
     /**
      * @var string
@@ -52,21 +47,16 @@ class BarcodeService{
      */
     private $overlayPath;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
-     * @param Container $container
-     * @param ImagineInterface $imagine
      * @param $kernelcachedir
      * @param $kernelrootdir
      * @param $webdir
      * @param $webroot
-     * @param Logger $logger
      */
-    public function __construct(Container $container, ImagineInterface $imagine, $kernelcachedir, $kernelrootdir, $webdir, $webroot, Logger $logger){
+    public function __construct(Container $container, ImagineInterface $imagine, $kernelcachedir, $kernelrootdir, $webdir, $webroot, LoggerInterface $logger)
+    {
         $this->types = BarcodeTypes::getTypes();
         $this->container = $container;
         $this->imagine = $imagine;
@@ -83,13 +73,15 @@ class BarcodeService{
      * @param $text
      * @param $file
      * @param array $options
+     *
      * @return bool
      */
-    public function saveAs($type, $text, $file, $options = array()){
+    public function saveAs($type, $text, $file, $options = [])
+    {
         @unlink($file);
-        switch ($type){
-            case $type == 'qr':
-                include_once __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."phpqrcode".DIRECTORY_SEPARATOR."qrlib.php";
+        switch ($type) {
+            case 'qr':
+                include_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'phpqrcode'.DIRECTORY_SEPARATOR.'qrlib.php';
 
                 $level = (isset($options['level'])) ? $options['level'] : QR_ECLEVEL_L;
                 $size = (isset($options['size'])) ? $options['size'] : 3;
@@ -103,9 +95,10 @@ class BarcodeService{
                 break;
             case is_numeric($type):
                 $type = $this->types[$type];
+                // no break
             default:
-                $barcodeOptions = array_merge(isset($options['barcodeOptions']) ? $options['barcodeOptions'] : array(), array('text' => $text));
-                $rendererOptions = isset($options['rendererOptions']) ? $options['rendererOptions'] : array();
+                $barcodeOptions = array_merge(isset($options['barcodeOptions']) ? $options['barcodeOptions'] : [], ['text' => $text]);
+                $rendererOptions = isset($options['rendererOptions']) ? $options['rendererOptions'] : [];
                 $rendererOptions['width'] = isset($rendererOptions['width']) ? $rendererOptions['width'] : 2233;
                 $rendererOptions['height'] = isset($rendererOptions['height']) ? $rendererOptions['height'] : 649;
                 $palette = new RGBColor();
@@ -124,25 +117,25 @@ class BarcodeService{
      */
     private function addOverlay($file, $size)
     {
-        list($width) = getimagesize($file);
+        [$width] = getimagesize($file);
         $size = ($size < 1) ? 1 : $size;
         $originalLevelWidth = $width / $size;
 
-        $overlayImagePath = $this->overlayPath . DIRECTORY_SEPARATOR . $originalLevelWidth . '.png';
+        $overlayImagePath = $this->overlayPath.DIRECTORY_SEPARATOR.$originalLevelWidth.'.png';
 
         if (file_exists($overlayImagePath)) {
             $destination = imagecreatefrompng($file);
             $src = imagecreatefrompng($overlayImagePath);
 
-            list($src_width) = getimagesize($overlayImagePath);
+            [$src_width] = getimagesize($overlayImagePath);
             $overlayImageWidth = $src_width;
 
-            #$palette = new RGBColor();
-            #$metaData = new MetadataBag();
-            #$overlayImage = new Image($src, $palette, $metaData);
-            #$overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
+            //$palette = new RGBColor();
+            //$metaData = new MetadataBag();
+            //$overlayImage = new Image($src, $palette, $metaData);
+            //$overlayImage->resize(new Box($overlayImageWidth, $overlayImageWidth));
             // $src = $overlayImage;
-            #$thumb = Imagick('myimage.gif');
+            //$thumb = Imagick('myimage.gif');
 
             /* $new_image = imagecreatetruecolor($overlayImageWidth, $overlayImageWidth);
               $white = imagecolorallocate($new_image, 0, 0, 0);
@@ -162,12 +155,11 @@ class BarcodeService{
               $src = imagecreatefrompng($tmpFilePath);
              */
 
-
             $xoffset = ($width - $overlayImageWidth) / 2;
             $yoffset = ($width - $overlayImageWidth) / 2;
 
             imagecopymerge($destination, $src, $xoffset, $yoffset, 0, 0, $overlayImageWidth, $overlayImageWidth, 100);
-            #imagepng($src, $file, 0);
+            //imagepng($src, $file, 0);
             imagepng($destination, $file, 9);
             imagedestroy($destination);
             imagedestroy($src);
@@ -186,7 +178,8 @@ class BarcodeService{
      * @param $src_h
      * @param $pct
      */
-    private function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
+    private function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct)
+    {
         // creating a cut resource
         $cut = imagecreatetruecolor($src_w, $src_h);
 
@@ -200,32 +193,33 @@ class BarcodeService{
         imagecopymerge($dst_im, $cut, $dst_x, $dst_y, 0, 0, $src_w, $src_h, $pct);
     }
 
-
     /**
      * Get a Barcodes Filename
-     * Generates it if its not here
+     * Generates it if its not here.
      *
-     * @param string $type BarcodeType
-     * @param string $enctext BarcodeText
-     * @param boolean $absolute get absolute path, default: false
-     * @param array $options Options
+     * @param string $type     BarcodeType
+     * @param string $enctext  BarcodeText
+     * @param bool   $absolute get absolute path, default: false
+     * @param array  $options  Options
+     *
      * @return mixed|string
      */
-    public function get($type, $enctext, $absolute = false, $options = array()){
+    public function get($type, $enctext, $absolute = false, $options = [])
+    {
         $text = urldecode($enctext);
-        $filename = $this->getAbsoluteBarcodeDir($type) . $this->getBarcodeFilename($text, $options);
+        $filename = $this->getAbsoluteBarcodeDir($type).$this->getBarcodeFilename($text, $options);
 
         if ((isset($options['noCache']) && $options['noCache']) || !file_exists($filename)) {
             $this->saveAs($type, $text, $filename, $options);
         }
 
         if (!$absolute) {
-            $path = DIRECTORY_SEPARATOR . $this->webdir . $this->getTypeDir($type) . $this->getBarcodeFilename(
-                    $text,
-                    $options
-                );
+            $path = DIRECTORY_SEPARATOR.$this->webdir.$this->getTypeDir($type).$this->getBarcodeFilename(
+                $text,
+                $options
+            );
 
-            return str_replace(DIRECTORY_SEPARATOR, "/", $path);
+            return str_replace(DIRECTORY_SEPARATOR, '/', $path);
         }
 
         return $filename;
@@ -233,10 +227,12 @@ class BarcodeService{
 
     /**
      * @param $type
+     *
      * @return string
      */
-    protected function getTypeDir($type){
-        if(is_numeric($type)){
+    protected function getTypeDir($type)
+    {
+        if (is_numeric($type)) {
             $type = $this->types[$type];
         }
 
@@ -246,19 +242,23 @@ class BarcodeService{
     /**
      * @param $text
      * @param $options
+     *
      * @return string
      */
-    protected function getBarcodeFilename($text, $options){
-        return sha1($text . serialize($options)).".png";
+    protected function getBarcodeFilename($text, $options)
+    {
+        return sha1($text.serialize($options)).'.png';
     }
 
     /**
      * @param $type
+     *
      * @return string
      */
-    protected function getAbsoluteBarcodeDir($type){
-        $path = $this->getAbsolutePath() . $this->getTypeDir($type);
-        if(!file_exists($path)){
+    protected function getAbsoluteBarcodeDir($type)
+    {
+        $path = $this->getAbsolutePath().$this->getTypeDir($type);
+        if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
@@ -268,7 +268,8 @@ class BarcodeService{
     /**
      * @return string
      */
-    protected function getAbsolutePath(){
+    protected function getAbsolutePath()
+    {
         return $this->webroot.DIRECTORY_SEPARATOR.$this->webdir;
     }
 
@@ -281,7 +282,7 @@ class BarcodeService{
         if ($overlayPath) {
             $this->overlayPath = $overlayPath;
         } else {
-            $this->overlayPath = __DIR__ . '/../Resources/qr_overlays';
+            $this->overlayPath = __DIR__.'/../Resources/qr_overlays';
         }
     }
 }

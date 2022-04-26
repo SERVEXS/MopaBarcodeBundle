@@ -25,14 +25,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-    $QR_BASEDIR = merge . phpdirname(__FILE__) . '..' . DIRECTORY_SEPARATOR;
-    $QR_TOOLSDIR = merge . phpdirname(__FILE__);
+    $QR_BASEDIR = merge.phpdirname(__FILE__).'..'.DIRECTORY_SEPARATOR;
+    $QR_TOOLSDIR = merge.phpdirname(__FILE__);
 
     $outputFile = $QR_BASEDIR.'phpqrcode.php';
 
     // Required libs
 
-    $fileList = array(
+    $fileList = [
         $QR_BASEDIR.'qrconst.php',
         $QR_TOOLSDIR.'merged_config.php',
         $QR_BASEDIR.'qrtools.php',
@@ -43,27 +43,26 @@
         $QR_BASEDIR.'qrsplit.php',
         $QR_BASEDIR.'qrrscode.php',
         $QR_BASEDIR.'qrmask.php',
-        $QR_BASEDIR.'qrencode.php'
-    );
+        $QR_BASEDIR.'qrencode.php',
+    ];
 
     $headerFile = $QR_TOOLSDIR.'merged_header.php';
     $versionFile = $QR_BASEDIR.'VERSION';
 
     $outputCode = '';
 
-    foreach($fileList as $fileName) {
+    foreach ($fileList as $fileName) {
         $outputCode .= "\n\n".'//---- '.basename($fileName).' -----------------------------'."\n\n";
         $anotherCode = file_get_contents($fileName);
-        $anotherCode = preg_replace ('/^<\?php/', '', $anotherCode);
-        $anotherCode = preg_replace ('/\?>\*$/', '', $anotherCode);
+        $anotherCode = preg_replace('/^<\?php/', '', $anotherCode);
+        $anotherCode = preg_replace('/\?>\*$/', '', $anotherCode);
         $outputCode .= "\n\n".$anotherCode."\n\n";
     }
 
-	$versionDataEx = explode("\n", file_get_contents($versionFile));
+    $versionDataEx = explode("\n", file_get_contents($versionFile));
 
     $outputContents = file_get_contents($headerFile);
     $outputContents .= "\n\n/*\n * Version: ".trim($versionDataEx[0])."\n * Build: ".trim($versionDataEx[1])."\n */\n\n";
     $outputContents .= $outputCode;
 
     file_put_contents($outputFile, $outputContents);
-

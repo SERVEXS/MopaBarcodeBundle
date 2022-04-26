@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Twig extension for barcodes
+ * Twig extension for barcodes.
  *
  * @author Philipp A. Mohrenweiser<phiamo@googlemail.com>
  * @copyright 2011 Philipp Mohrenweiser
@@ -44,6 +44,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param $type
      * @param $text
      * @param array $options
+     *
      * @return mixed|string
      */
     public function url($type, $text, $options = [])
@@ -55,6 +56,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param $type
      * @param $text
      * @param array $options
+     *
      * @return mixed|string
      */
     public function path($type, $text, $options = [])
@@ -67,6 +69,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param $text
      * @param $absolute
      * @param array $options
+     *
      * @return mixed|string
      */
     protected function get($type, $text, $absolute, $options = [])

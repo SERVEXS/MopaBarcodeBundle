@@ -12,6 +12,6 @@ return static function (ContainerConfigurator $containerConfigurator) {
         __DIR__ . '/tests',
     ]);
 
-    $containerConfigurator->import(SetList::PSR_12);
+    $containerConfigurator->import(SetList::SYMFONY);
     $containerConfigurator->import(SetList::CLEAN_CODE);
 };

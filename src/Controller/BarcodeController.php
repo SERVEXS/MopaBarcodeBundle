@@ -23,7 +23,7 @@ class BarcodeController extends AbstractController
     }
 
     /**
-     * This is just an example howto use barcodes and to display them
+     * This is just an example howto use barcodes and to display them.
      */
     public function playground(Request $request): Response
     {
@@ -34,7 +34,7 @@ class BarcodeController extends AbstractController
             ->add('text')
             ->add('type', 'choice', [
                 'empty_value' => 'Choose an option',
-                'choices'     => $types,
+                'choices' => $types,
             ])
             ->getForm();
 
@@ -51,7 +51,7 @@ class BarcodeController extends AbstractController
                     $errors[] = $e->getMessage();
                 }
             } else {
-                $errors[] = "Please select a option";
+                $errors[] = 'Please select a option';
             }
             if (count($errors)) {
                 $webfile = false;
@@ -61,16 +61,16 @@ class BarcodeController extends AbstractController
         return $this->render(
             'MopaBarcodeBundle:Barcode:playground.html.twig',
             [
-                'form'        => $form->createView(),
+                'form' => $form->createView(),
                 'barcode_url' => $webfile,
-                'errors'      => $errors,
+                'errors' => $errors,
             ]
         );
     }
 
     /**
      * This might be used to render barcodes dynamically
-     * Careful to expose this on the web, maybe others could use your site just to generate and display barcodes
+     * Careful to expose this on the web, maybe others could use your site just to generate and display barcodes.
      *
      * @param $type
      * @param $enctext
@@ -81,8 +81,8 @@ class BarcodeController extends AbstractController
             file_get_contents($file = $this->barcodeService->get($type, $enctext, true)),
             200,
             [
-                'Content-Type'        => 'image/png',
-                'Content-Disposition' => 'filename="' . $file . '"',
+                'Content-Type' => 'image/png',
+                'Content-Disposition' => 'filename="'.$file.'"',
             ]
         );
     }
@@ -95,20 +95,20 @@ class BarcodeController extends AbstractController
         bool $useOverlay = false,
         string $enctext
     ): Response {
-        $options = array(
-            'level'      => $level,
-            'size'       => $size,
-            'margin'     => $margin,
+        $options = [
+            'level' => $level,
+            'size' => $size,
+            'margin' => $margin,
             'useOverlay' => $useOverlay,
-        );
+        ];
 
         return new Response(
             file_get_contents($file = $this->barcodeService->get($type, $enctext, true, $options)),
             200,
-            array(
-                'Content-Type'        => 'image/png',
-                'Content-Disposition' => sprintf('attachment; filename="qr_%s"', date("Y_m_d_H_i_s")),
-            )
+            [
+                'Content-Type' => 'image/png',
+                'Content-Disposition' => sprintf('attachment; filename="qr_%s"', date('Y_m_d_H_i_s')),
+            ]
         );
     }
 }
