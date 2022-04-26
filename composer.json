@@ -15,7 +15,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "Mopa\\Bundle\\BarcodeBundle\\": "src",
+            "Mopa\\Bundle\\BarcodeBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Mopa\\BarcodeBundle\\Tests\\": "Tests"
         }
     },

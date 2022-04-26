@@ -23,7 +23,9 @@ class Configuration implements ConfigurationInterface
             : $treeBuilder->root('mopa_barcode');
 
         $rootNode->children()
-                 ->scalarNode('overlay_images_path')->end();
+                     ->scalarNode('overlay_images_path')->defaultNull()->end()
+                     ->scalarNode('root_dir')->defaultValue('%kernel.root_dir%/../public')->end()
+                   ->end();
 
         return $treeBuilder;
     }
