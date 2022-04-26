@@ -8,7 +8,10 @@ use Imagine\Image\ImagineInterface;
 use Imagine\Image\Metadata\MetadataBag;
 use Imagine\Image\Palette\RGB as RGBColor;
 use Laminas\Barcode\Barcode;
+use Mopa\Bundle\BarcodeBundle\QR\Config;
+use Mopa\Bundle\BarcodeBundle\QR\Encode;
 use Psr\Log\LoggerInterface; //PaletteInterface
+use RuntimeException;
 use Symfony\Component\DependencyInjection\Container;
 
 class BarcodeService
@@ -81,12 +84,15 @@ class BarcodeService
         @unlink($file);
         switch ($type) {
             case 'qr':
-                include_once __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Resources'.DIRECTORY_SEPARATOR.'phpqrcode'.DIRECTORY_SEPARATOR.'qrlib.php';
+                $level = $options['level'] ?? Config::EC_LEVEL_L;
+                $size = $options['size'] ?? 3;
+                $margin = $options['margin'] ?? 4;
+                Config::initialize(
+                    $this->kernelcachedir.DIRECTORY_SEPARATOR.'phpqr'.DIRECTORY_SEPARATOR,
+                    $this->kernelrootdir.DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'phpqr'.DIRECTORY_SEPARATOR,
+                );
 
-                $level = (isset($options['level'])) ? $options['level'] : QR_ECLEVEL_L;
-                $size = (isset($options['size'])) ? $options['size'] : 3;
-                $margin = (isset($options['margin'])) ? $options['margin'] : 4;
-                \QRcode::png($text, $file, $level, $size, $margin);
+                Encode::png($text, $file, $level, $size, $margin);
 
                 if (isset($options['useOverlay']) && $options['useOverlay']) {
                     $this->addOverlay($file, $size);
@@ -97,10 +103,10 @@ class BarcodeService
                 $type = $this->types[$type];
                 // no break
             default:
-                $barcodeOptions = array_merge(isset($options['barcodeOptions']) ? $options['barcodeOptions'] : [], ['text' => $text]);
-                $rendererOptions = isset($options['rendererOptions']) ? $options['rendererOptions'] : [];
-                $rendererOptions['width'] = isset($rendererOptions['width']) ? $rendererOptions['width'] : 2233;
-                $rendererOptions['height'] = isset($rendererOptions['height']) ? $rendererOptions['height'] : 649;
+                $barcodeOptions = array_merge($options['barcodeOptions'] ?? [], ['text' => $text]);
+                $rendererOptions = $options['rendererOptions'] ?? [];
+                $rendererOptions['width'] = $rendererOptions['width'] ?? 2233;
+                $rendererOptions['height'] = $rendererOptions['height'] ?? 649;
                 $palette = new RGBColor();
                 $metaData = new MetadataBag();
                 $imageResource = Barcode::factory($type, 'image', $barcodeOptions, $rendererOptions)->draw();
@@ -259,7 +265,9 @@ class BarcodeService
     {
         $path = $this->getAbsolutePath().$this->getTypeDir($type);
         if (!file_exists($path)) {
-            mkdir($path, 0777, true);
+            if (!mkdir($path, 0777, true) && !is_dir($path)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+            }
         }
 
         return $path;
