@@ -89,7 +89,7 @@ class BarcodeService{
         @unlink($file);
         switch ($type){
             case $type == 'qr':
-                include_once __DIR__ . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . "qrlib.php";
+                include_once __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."phpqrcode".DIRECTORY_SEPARATOR."qrlib.php";
 
                 $level = (isset($options['level'])) ? $options['level'] : QR_ECLEVEL_L;
                 $size = (isset($options['size'])) ? $options['size'] : 3;
