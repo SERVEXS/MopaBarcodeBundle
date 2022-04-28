@@ -8,13 +8,11 @@ final class Mask
 {
     public $runLength = [];
 
-    //----------------------------------------------------------------------
     public function __construct()
     {
-        $this->runLength = array_fill(0, Config::QRSPEC_WIDTH_MAX + 1, 0);
+        $this->runLength = array_fill(0, Constants::QRSPEC_WIDTH_MAX + 1, 0);
     }
 
-    //----------------------------------------------------------------------
     public function writeFormatInformation($width, &$frame, $mask, $level)
     {
         $blacks = 0;
@@ -99,7 +97,6 @@ final class Mask
         return ((($x * $y) % 3) + (($x + $y) & 1)) & 1;
     }
 
-    //----------------------------------------------------------------------
     private function generateMaskNo($maskNo, $width, $frame)
     {
         $bitMask = array_fill(0, $width, array_fill(0, $width, 0));
@@ -118,19 +115,17 @@ final class Mask
         return $bitMask;
     }
 
-    //----------------------------------------------------------------------
     public static function serial($bitFrame)
     {
         $codeArr = [];
 
         foreach ($bitFrame as $line) {
-            $codeArr[] = join('', $line);
+            $codeArr[] = implode('', $line);
         }
 
-        return gzcompress(join("\n", $codeArr), 9);
+        return gzcompress(implode("\n", $codeArr), 9);
     }
 
-    //----------------------------------------------------------------------
     public static function unserial($code)
     {
         $codeArr = [];
@@ -182,7 +177,6 @@ final class Mask
         return $b;
     }
 
-    //----------------------------------------------------------------------
     public function makeMask($width, $frame, $maskNo, $level)
     {
         $masked = array_fill(0, $width, str_repeat("\0", $width));
@@ -192,14 +186,13 @@ final class Mask
         return $masked;
     }
 
-    //----------------------------------------------------------------------
     public function calcN1N3($length)
     {
         $demerit = 0;
 
         for ($i = 0; $i < $length; ++$i) {
             if ($this->runLength[$i] >= 5) {
-                $demerit += (N1 + ($this->runLength[$i] - 5));
+                $demerit += (Constants::N1 + ($this->runLength[$i] - 5));
             }
             if ($i & 1) {
                 if (($i >= 3) && ($i < ($length - 2)) && ($this->runLength[$i] % 3 == 0)) {
@@ -209,9 +202,9 @@ final class Mask
                         ($this->runLength[$i + 1] == $fact) &&
                         ($this->runLength[$i + 2] == $fact)) {
                         if (($this->runLength[$i - 3] < 0) || ($this->runLength[$i - 3] >= (4 * $fact))) {
-                            $demerit += N3;
+                            $demerit += Constants::N3;
                         } elseif ((($i + 3) >= $length) || ($this->runLength[$i + 3] >= (4 * $fact))) {
-                            $demerit += N3;
+                            $demerit += Constants::N3;
                         }
                     }
                 }
@@ -221,7 +214,6 @@ final class Mask
         return $demerit;
     }
 
-    //----------------------------------------------------------------------
     public function evaluateSymbol($width, $frame)
     {
         $head = 0;
@@ -243,7 +235,7 @@ final class Mask
                     $w22 = ord($frameY[$x]) | ord($frameY[$x - 1]) | ord($frameYM[$x]) | ord($frameYM[$x - 1]);
 
                     if (($b22 | ($w22 ^ 1)) & 1) {
-                        $demerit += N2;
+                        $demerit += Constants::N2;
                     }
                 }
                 if ((0 == $x) && (ord($frameY[$x]) & 1)) {
@@ -288,7 +280,6 @@ final class Mask
         return $demerit;
     }
 
-    //----------------------------------------------------------------------
     public function mask($width, $frame, $level)
     {
         $minDemerit = PHP_INT_MAX;
@@ -297,10 +288,10 @@ final class Mask
 
         $checked_masks = [0, 1, 2, 3, 4, 5, 6, 7];
 
-        if (QR_FIND_FROM_RANDOM !== false) {
-            $howManuOut = 8 - (QR_FIND_FROM_RANDOM % 9);
+        if (Constants::QR_FIND_FROM_RANDOM !== false) {
+            $howManuOut = 8 - (Constants::QR_FIND_FROM_RANDOM % 9);
             for ($i = 0; $i < $howManuOut; ++$i) {
-                $remPos = rand(0, count($checked_masks) - 1);
+                $remPos = random_int(0, count($checked_masks) - 1);
                 unset($checked_masks[$remPos]);
                 $checked_masks = array_values($checked_masks);
             }
@@ -313,10 +304,13 @@ final class Mask
 
             $demerit = 0;
             $blacks = 0;
-            $blacks = $this->makeMaskNo($i, $width, $frame, $mask);
+
+            if ($maskNo = $this->makeMaskNo($i, $width, $frame, $mask)) {
+                $blacks = $maskNo;
+            }
             $blacks += $this->writeFormatInformation($width, $mask, $i, $level);
             $blacks = (int) (100 * $blacks / ($width * $width));
-            $demerit = (int) ((int) (abs($blacks - 50) / 5) * N4);
+            $demerit = (int) ((int) (abs($blacks - 50) / 5) * Constants::N4);
             $demerit += $this->evaluateSymbol($width, $mask);
 
             if ($demerit < $minDemerit) {

@@ -17,9 +17,9 @@ final class Input
     private $version;
     private $level;
 
-    public function __construct($version = 0, $level = Config::EC_LEVEL_L)
+    public function __construct($version = 0, $level = Constants::EC_LEVEL_L)
     {
-        if ($version < 0 || $version > Config::QRSPEC_VERSION_MAX || $level > Config::EC_LEVEL_H) {
+        if ($version < 0 || $version > Constants::QRSPEC_VERSION_MAX || $level > Constants::EC_LEVEL_H) {
             throw new RuntimeException('Invalid version no');
         }
 
@@ -34,7 +34,7 @@ final class Input
 
     public function setVersion($version): int
     {
-        if ($version < 0 || $version > Config::QRSPEC_VERSION_MAX) {
+        if ($version < 0 || $version > Constants::QRSPEC_VERSION_MAX) {
             throw new RuntimeException('Invalid version no');
         }
 
@@ -50,7 +50,7 @@ final class Input
 
     public function setErrorCorrectionLevel($level): int
     {
-        if ($level > Config::EC_LEVEL_H) {
+        if ($level > Constants::EC_LEVEL_H) {
             throw new RuntimeException('Invalid ECLEVEL');
         }
 
@@ -78,18 +78,18 @@ final class Input
 
     public function insertStructuredAppendHeader($size, $index, $parity): int
     {
-        if ($size > Config::MAX_STRUCTURED_SYMBOLS) {
+        if ($size > Constants::MAX_STRUCTURED_SYMBOLS) {
             throw new RuntimeException('insertStructuredAppendHeader wrong size');
         }
 
-        if ($index <= 0 || $index > Config::MAX_STRUCTURED_SYMBOLS) {
+        if ($index <= 0 || $index > Constants::MAX_STRUCTURED_SYMBOLS) {
             throw new RuntimeException('insertStructuredAppendHeader wrong index');
         }
 
         $buf = [$size, $index, $parity];
 
         try {
-            $entry = new InputItem(Config::QR_MODE_STRUCTURE, 3, $buf);
+            $entry = new InputItem(Constants::QR_MODE_STRUCTURE, 3, $buf);
             array_unshift($this->items, $entry);
 
             return 0;
@@ -103,7 +103,7 @@ final class Input
         $parity = 0;
 
         foreach ($this->items as $item) {
-            if (Config::QR_MODE_STRUCTURE !== $item->getMode()) {
+            if (Constants::QR_MODE_STRUCTURE !== $item->getMode()) {
                 for ($i = $item->getSize() - 1; $i >= 0; --$i) {
                     $parity ^= $item->getData()[$i];
                 }
@@ -187,7 +187,7 @@ final class Input
         return $size * 8;
     }
 
-    public function estimateBitsModeKanji($size): int
+    public static function estimateBitsModeKanji($size): int
     {
         return (int) (($size / 2) * 13);
     }
@@ -217,21 +217,24 @@ final class Input
         }
 
         switch ($mode) {
-            case Config::QR_MODE_NUM:
+            case Constants::QR_MODE_NUM:
                 return self::checkModeNum($size, $data);
-            case Config::QR_MODE_AN:
+            case Constants::QR_MODE_AN:
                 return self::checkModeAn($size, $data);
-            case Config::QR_MODE_KANJI:
+            case Constants::QR_MODE_KANJI:
                 return self::checkModeKanji($size, $data);
-            case Config::QR_MODE_STRUCTURE:
-            case Config::QR_MODE_8:
+            case Constants::QR_MODE_STRUCTURE:
+            case Constants::QR_MODE_8:
                 return true;
         }
 
         return false;
     }
 
-    public function estimateBitStreamSize(int $version): int
+    /**
+     * @return float|int
+     */
+    public function estimateBitStreamSize(int $version)
     {
         $bits = 0;
 
@@ -262,7 +265,7 @@ final class Input
     {
         $payload = $bits - 4 - Spec::lengthIndicator($mode, $version);
         switch ($mode) {
-            case Config::QR_MODE_NUM:
+            case Constants::QR_MODE_NUM:
                 $chunks = (int) ($payload / 10);
                 $remain = $payload - $chunks * 10;
                 $size = $chunks * 3;
@@ -272,7 +275,7 @@ final class Input
                     ++$size;
                 }
                 break;
-            case Config::QR_MODE_AN:
+            case Constants::QR_MODE_AN:
                 $chunks = (int) ($payload / 11);
                 $remain = $payload - $chunks * 11;
                 $size = $chunks * 2;
@@ -280,11 +283,11 @@ final class Input
                     ++$size;
                 }
                 break;
-            case Config::QR_MODE_STRUCTURE:
-            case Config::QR_MODE_8:
+            case Constants::QR_MODE_STRUCTURE:
+            case Constants::QR_MODE_8:
                 $size = (int) ($payload / 8);
                 break;
-            case Config::QR_MODE_KANJI:
+            case Constants::QR_MODE_KANJI:
                 $size = (int) (($payload / 13) * 2);
                 break;
             default:

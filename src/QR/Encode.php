@@ -12,9 +12,9 @@ final class Encode
     /**
      * @var string|int
      */
-    private $level = Config::EC_LEVEL_L;
+    private $level = Constants::EC_LEVEL_L;
 
-    private int $hint = Config::QR_MODE_8;
+    private int $hint = Constants::QR_MODE_8;
 
     private int $size = 3;
 
@@ -29,7 +29,7 @@ final class Encode
     /**
      * @param string|int $level
      */
-    public static function factory($level = Config::EC_LEVEL_L, int $size = 3, int $margin = 4): self
+    public static function factory($level = Constants::EC_LEVEL_L, int $size = 3, int $margin = 4): self
     {
         $encoder = new self();
         $encoder->setSize($size);
@@ -52,29 +52,29 @@ final class Encode
     protected static function normalizeLevel($level): int
     {
         switch ($level) {
-            case (string)Config::EC_LEVEL_L;
-            case (string)Config::EC_LEVEL_M;
-            case (string)Config::EC_LEVEL_Q;
-            case (string)Config::EC_LEVEL_H;
+            case (string)Constants::EC_LEVEL_L;
+            case (string)Constants::EC_LEVEL_M;
+            case (string)Constants::EC_LEVEL_Q;
+            case (string)Constants::EC_LEVEL_H;
                 return (int)$level;
             case 'l':
             case 'L':
-                return Config::EC_LEVEL_L;
+                return Constants::EC_LEVEL_L;
             case 'm':
             case 'M':
-                return Config::EC_LEVEL_M;
+                return Constants::EC_LEVEL_M;
             case 'q':
             case 'Q':
-                return Config::EC_LEVEL_Q;
+                return Constants::EC_LEVEL_Q;
             case 'h':
             case 'H':
-                return Config::EC_LEVEL_H;
+                return Constants::EC_LEVEL_H;
         }
 
         throw new RuntimeException(sprintf('Unsupported level "%s" value', $level));
     }
 
-    public static function png(?string $text, $outfile = false, int $level = Config::EC_LEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false)
+    public static function png(?string $text, $outfile = false, int $level = Constants::EC_LEVEL_L, int $size = 3, int $margin = 4, bool $saveAndPrint = false)
     {
         return self::factory($level, $size, $margin)->encodePNG($text, $outfile, $saveAndPrint);
     }
@@ -106,7 +106,7 @@ final class Encode
                 Tools::log($outFile, $error);
             }
 
-            $maxSize = (int)(Config::PNG_MAX_SIZE / (count($tab) * 2 + $this->margin));
+            $maxSize = (int)(Constants::PNG_MAX_SIZE / (count($tab) * 2 + $this->margin));
 
             Image::png($tab, $outFile, min(max(1, $this->size), $maxSize), $this->margin, $saveAndPrint);
         }catch (Exception $e) {

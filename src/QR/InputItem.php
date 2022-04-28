@@ -70,7 +70,7 @@ final class InputItem
 
             $val = 0x1;
             $bitStream->appendNum(4, $val);
-            $bitStream->appendNum(Spec::lengthIndicator(Config::QR_MODE_NUM, $version), $this->size);
+            $bitStream->appendNum(Spec::lengthIndicator(Constants::QR_MODE_NUM, $version), $this->size);
 
             for ($i = 0; $i < $words; ++$i) {
                 $val = (ord($this->data[$i * 3]) - ord('0')) * 100;
@@ -103,7 +103,7 @@ final class InputItem
             $bitStream = new BitStream();
 
             $bitStream->appendNum(4, 0x02);
-            $bitStream->appendNum(Spec::lengthIndicator(Config::QR_MODE_AN, $version), $this->size);
+            $bitStream->appendNum(Spec::lengthIndicator(Constants::QR_MODE_AN, $version), $this->size);
 
             for ($i = 0; $i < $words; ++$i) {
                 $val = (int)Input::lookAnTable(ord($this->data[$i * 2])) * 45;
@@ -131,7 +131,7 @@ final class InputItem
             $bitStream = new BitStream();
 
             $bitStream->appendNum(4, 0x4);
-            $bitStream->appendNum(Spec::lengthIndicator(Config::QR_MODE_8, $version), $this->size);
+            $bitStream->appendNum(Spec::lengthIndicator(Constants::QR_MODE_8, $version), $this->size);
 
             for ($i = 0; $i < $this->size; ++$i) {
                 $bitStream->appendNum(8, ord($this->data[$i]));
@@ -151,7 +151,7 @@ final class InputItem
             $bitStream = new BitStream();
 
             $bitStream->appendNum(4, 0x8);
-            $bitStream->appendNum(Spec::lengthIndicator(Config::QR_MODE_KANJI, $version), (int)($this->size / 2));
+            $bitStream->appendNum(Spec::lengthIndicator(Constants::QR_MODE_KANJI, $version), (int)($this->size / 2));
 
             for ($i = 0; $i < $this->size; $i += 2) {
                 $val = (ord($this->data[$i]) << 8) | ord($this->data[$i + 1]);
@@ -193,29 +193,30 @@ final class InputItem
         }
     }
 
-    public function estimateBitStreamSizeOfEntry($version): int
+    /**
+     * @return float|int
+     */
+    public function estimateBitStreamSizeOfEntry($version)
     {
-        $bits = 0;
-
         if (0 === $version) {
             $version = 1;
         }
 
         switch ($this->mode) {
-            case Config::QR_MODE_NUM:
+            case Constants::QR_MODE_NUM:
                 $bits = Input::estimateBitsModeNum($this->size);
                 break;
-            case Config::QR_MODE_AN:
+            case Constants::QR_MODE_AN:
                 $bits = Input::estimateBitsModeAn($this->size);
                 break;
-            case Config::QR_MODE_8:
+            case Constants::QR_MODE_8:
                 $bits = Input::estimateBitsMode8($this->size);
                 break;
-            case Config::QR_MODE_KANJI:
+            case Constants::QR_MODE_KANJI:
                 $bits = Input::estimateBitsModeKanji($this->size);
                 break;
-            case Config::QR_MODE_STRUCTURE:
-                return Config::STRUCTURE_HEADER_BITS;
+            case Constants::QR_MODE_STRUCTURE:
+                return Constants::STRUCTURE_HEADER_BITS;
             default:
                 return 0;
         }
@@ -229,7 +230,7 @@ final class InputItem
         return $bits;
     }
 
-    public function encodeBitStream(int $version): int
+    public function encodeBitStream(int $version)
     {
         try {
             unset($this->bitStream);
@@ -246,25 +247,24 @@ final class InputItem
                 $this->bitStream->append($st1->getBitStream());
                 $this->bitStream->append($st2->getBitStream());
 
-                unset($st1);
-                unset($st2);
+                unset($st1, $st2);
             } else {
                 $ret = 0;
 
                 switch ($this->mode) {
-                    case Config::QR_MODE_NUM:
+                    case Constants::QR_MODE_NUM:
                         $ret = $this->encodeModeNum($version);
                         break;
-                    case Config::QR_MODE_AN:
+                    case Constants::QR_MODE_AN:
                         $ret = $this->encodeModeAn($version);
                         break;
-                    case Config::QR_MODE_8:
+                    case Constants::QR_MODE_8:
                         $ret = $this->encodeMode8($version);
                         break;
-                    case Config::QR_MODE_KANJI:
+                    case Constants::QR_MODE_KANJI:
                         $ret = $this->encodeModeKanji($version);
                         break;
-                    case Config::QR_MODE_STRUCTURE:
+                    case Constants::QR_MODE_STRUCTURE:
                         $ret = $this->encodeModeStructure();
                         break;
 

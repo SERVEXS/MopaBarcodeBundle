@@ -55,28 +55,28 @@ final class Spec
 
     public static function getDataLength($version, $level): int
     {
-        return self::$capacity[$version][Config::QRCAP_WORDS] - self::$capacity[$version][Config::QRCAP_EC][$level];
+        return self::$capacity[$version][Constants::QRCAP_WORDS] - self::$capacity[$version][Constants::QRCAP_EC][$level];
     }
 
     public static function getECCLength($version, $level): int
     {
-        return self::$capacity[$version][Config::QRCAP_EC][$level];
+        return self::$capacity[$version][Constants::QRCAP_EC][$level];
     }
 
     public static function getWidth($version)
     {
-        return self::$capacity[$version][Config::QRCAP_WIDTH];
+        return self::$capacity[$version][Constants::QRCAP_WIDTH];
     }
 
     public static function getRemainder($version)
     {
-        return self::$capacity[$version][Config::QRCAP_REMINDER];
+        return self::$capacity[$version][Constants::QRCAP_REMINDER];
     }
 
     public static function getMinimumVersion($size, $level): int
     {
-        for ($i = 1; $i <= Config::QRSPEC_VERSION_MAX; ++$i) {
-            $words = self::$capacity[$i][Config::QRCAP_WORDS] - self::$capacity[$i][Config::QRCAP_EC][$level];
+        for ($i = 1; $i <= Constants::QRSPEC_VERSION_MAX; ++$i) {
+            $words = self::$capacity[$i][Constants::QRCAP_WORDS] - self::$capacity[$i][Constants::QRCAP_EC][$level];
             if ($words >= $size) {
                 return $i;
             }
@@ -97,7 +97,7 @@ final class Spec
 
     public static function lengthIndicator($mode, $version)
     {
-        if (Config::QR_MODE_STRUCTURE === $mode) {
+        if (Constants::QR_MODE_STRUCTURE === $mode) {
             return 0;
         }
 
@@ -114,7 +114,7 @@ final class Spec
 
     public static function maximumWords($mode,  $version)
     {
-        if (Config::QR_MODE_STRUCTURE === $mode) {
+        if (Constants::QR_MODE_STRUCTURE === $mode) {
             return 3;
         }
 
@@ -129,7 +129,7 @@ final class Spec
         $bits = self::$lengthTableBits[$mode][$l];
         $words = (1 << $bits) - 1;
 
-        if (Config::QR_MODE_KANJI === $mode) {
+        if (Constants::QR_MODE_KANJI === $mode) {
             $words *= 2; // the number of bytes is required
         }
 
@@ -316,7 +316,7 @@ final class Spec
     //----------------------------------------------------------------------
     public static function getVersionPattern($version)
     {
-        if ($version < 7 || $version > Config::QRSPEC_VERSION_MAX) {
+        if ($version < 7 || $version > Constants::QRSPEC_VERSION_MAX) {
             return 0;
         }
 
@@ -378,7 +378,7 @@ final class Spec
     //----------------------------------------------------------------------
     public static function createFrame($version)
     {
-        $width = self::$capacity[$version][Config::QRCAP_WIDTH];
+        $width = self::$capacity[$version][Constants::QRCAP_WIDTH];
         $frameLine = str_repeat("\0", $width);
         $frame = array_fill(0, $width, $frameLine);
 
@@ -510,7 +510,7 @@ final class Spec
 
     public static function newFrame($version)
     {
-        if ($version < 1 || $version > Config::QRSPEC_VERSION_MAX) {
+        if ($version < 1 || $version > Constants::QRSPEC_VERSION_MAX) {
             return null;
         }
 

@@ -24,7 +24,7 @@ final class Code
             return null;
         }
 
-        $ret = $input->append($input, Config::QR_MODE_8, strlen($value), str_split($value));
+        $ret = $input->append($input, Constants::QR_MODE_8, strlen($value), str_split($value));
         if ($ret < 0) {
             unset($input);
 
@@ -41,7 +41,7 @@ final class Code
 
     public function encodeString($string, $version, $level, $hint, $caseSensitive)
     {
-        if (Config::QR_MODE_8 != $hint && Config::QR_MODE_KANJI != $hint) {
+        if (Constants::QR_MODE_8 != $hint && Constants::QR_MODE_KANJI != $hint) {
             throw new \RuntimeException('bad hint');
         }
 
@@ -72,10 +72,10 @@ final class Code
 
     private function encodeMask(Input $input, $mask)
     {
-        if ($input->getVersion() < 0 || $input->getVersion() > Config::QRSPEC_VERSION_MAX) {
+        if ($input->getVersion() < 0 || $input->getVersion() > Constants::QRSPEC_VERSION_MAX) {
             throw new RuntimeException('wrong version');
         }
-        if ($input->getErrorCorrectionLevel() > Config::EC_LEVEL_H) {
+        if ($input->getErrorCorrectionLevel() > Constants::EC_LEVEL_H) {
             throw new RuntimeException('wrong level');
         }
 
@@ -120,10 +120,10 @@ final class Code
         // masking
         $maskObj = new Mask();
         if ($mask < 0) {
-            if (Config::QR_FIND_BEST_MASK) {
+            if (Constants::QR_FIND_BEST_MASK) {
                 $masked = $maskObj->mask($width, $frame, $input->getErrorCorrectionLevel());
             } else {
-                $masked = $maskObj->makeMask($width, $frame, (int)(Config::QR_DEFAULT_MASK % 8), $input->getErrorCorrectionLevel());
+                $masked = $maskObj->makeMask($width, $frame, (int)(Constants::QR_DEFAULT_MASK % 8), $input->getErrorCorrectionLevel());
             }
         } else {
             $masked = $maskObj->makeMask($width, $frame, $mask, $input->getErrorCorrectionLevel());

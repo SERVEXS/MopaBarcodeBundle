@@ -63,9 +63,9 @@ final class Tools
         self::markTime('before_build_cache');
 
         $mask = new Mask();
-        for ($a = 1; $a <= Config::QRSPEC_VERSION_MAX; ++$a) {
+        for ($a = 1; $a <= Constants::QRSPEC_VERSION_MAX; ++$a) {
             $frame = Spec::newFrame($a);
-            if (Config::QR_IMAGE) {
+            if (Constants::QR_IMAGE) {
                 $fileName = Config::getCacheDir() . 'frame_' . $a . '.png';
                 Image::png(self::binarize($frame), $fileName, 1, 0);
             }

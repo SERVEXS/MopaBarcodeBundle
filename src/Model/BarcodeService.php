@@ -74,7 +74,7 @@ class BarcodeService
         @unlink($file);
         switch ($type) {
             case 'qr':
-                $level = $options['level'] ?? Config::EC_LEVEL_L;
+                $level = $options['level'] ?? Constants::EC_LEVEL_L;
                 $size = $options['size'] ?? 3;
                 $margin = $options['margin'] ?? 4;
                 Config::initialize(
