@@ -62,6 +62,10 @@ final class Config
 
     protected static function ensureDirExists(string $dir): void
     {
+        if (is_dir($dir)) {
+            return;
+        }
+
         if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
             throw new RuntimeException(sprintf('Directory "%s" was not created', $dir));
         }

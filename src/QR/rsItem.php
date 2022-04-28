@@ -55,7 +55,7 @@ final class rsItem
             return $rs;
         } // Too much padding
 
-        $rs = new QRrsItem();
+        $rs = new self();
         $rs->mm = $symsize;
         $rs->nn = (1 << $symsize) - 1;
         $rs->pad = $pad;

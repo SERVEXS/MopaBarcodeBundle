@@ -293,4 +293,19 @@ final class Split
 
         return $split->splitString();
     }
+
+    public static function splitStringToQRinput($string, Input $input, $hint, bool $caseSensitive)
+    {
+        if (is_null($string) || $string == '\0' || $string == '') {
+            throw new RuntimeException('empty string!!!');
+        }
+
+        $split = new Split($string, $input, $hint);
+
+        if (!$caseSensitive) {
+            $split->toUpper();
+        }
+
+        return $split->splitString();
+    }
 }

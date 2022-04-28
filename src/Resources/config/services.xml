@@ -12,7 +12,7 @@
             <argument type="service" id="service_container" />
             <argument type="service" id="liip_imagine" />
             <argument>%kernel.cache_dir%</argument>
-            <argument>%kernel.root_dir%</argument>
+            <argument>%kernel.logs_dir%</argument>
             <argument>cache/barcodes/</argument>
             <argument>%mopa_barcode.root_dir%</argument>
             <argument type="service" id="logger" />

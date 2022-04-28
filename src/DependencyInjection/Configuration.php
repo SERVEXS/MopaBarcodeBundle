@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->children()
                      ->scalarNode('overlay_images_path')->defaultNull()->end()
-                     ->scalarNode('root_dir')->defaultValue('%kernel.root_dir%/../public')->end()
+                     ->scalarNode('root_dir')->defaultValue('%kernel.project_dir%/public')->end()
                    ->end();
 
         return $treeBuilder;

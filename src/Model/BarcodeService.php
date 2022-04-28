@@ -10,6 +10,7 @@ use Imagine\Image\Palette\RGB as RGBColor;
 use Laminas\Barcode\Barcode;
 use Mopa\Bundle\BarcodeBundle\QR\Config;
 use Mopa\Bundle\BarcodeBundle\QR\Encode;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface; //PaletteInterface
 use RuntimeException;
 use Symfony\Component\DependencyInjection\Container;
@@ -21,29 +22,17 @@ class BarcodeService
      */
     private $types;
 
-    private Container $container;
+    private ContainerInterface $container;
 
     private ImagineInterface $imagine;
 
-    /**
-     * @var string
-     */
-    private $kernelcachedir;
+    private string $kernelCacheDir;
 
-    /**
-     * @var string
-     */
-    private $kernelrootdir;
+    private string $kernelLogDir;
 
-    /**
-     * @var string
-     */
-    private $webdir;
+    private string $webDir;
 
-    /**
-     * @varstring
-     */
-    private $webroot;
+    private string $webRoot;
 
     /**
      * @var string
@@ -52,21 +41,22 @@ class BarcodeService
 
     private LoggerInterface $logger;
 
-    /**
-     * @param $kernelcachedir
-     * @param $kernelrootdir
-     * @param $webdir
-     * @param $webroot
-     */
-    public function __construct(Container $container, ImagineInterface $imagine, $kernelcachedir, $kernelrootdir, $webdir, $webroot, LoggerInterface $logger)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        ImagineInterface $imagine,
+        string $kernelCacheDir,
+        string $kernelLogDir,
+        string $webDir,
+        string $webRoot,
+        LoggerInterface $logger
+    ) {
         $this->types = BarcodeTypes::getTypes();
         $this->container = $container;
         $this->imagine = $imagine;
-        $this->kernelcachedir = $kernelcachedir;
-        $this->kernelrootdir = $kernelrootdir;
-        $this->webdir = $webdir;
-        $this->webroot = $webroot;
+        $this->kernelCacheDir = $kernelCacheDir;
+        $this->kernelLogDir = $kernelLogDir;
+        $this->webDir = $webDir;
+        $this->webRoot = $webRoot;
         $this->logger = $logger;
         $this->getOverlayPath();
     }
@@ -88,8 +78,8 @@ class BarcodeService
                 $size = $options['size'] ?? 3;
                 $margin = $options['margin'] ?? 4;
                 Config::initialize(
-                    $this->kernelcachedir.DIRECTORY_SEPARATOR.'phpqr'.DIRECTORY_SEPARATOR,
-                    $this->kernelrootdir.DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'phpqr'.DIRECTORY_SEPARATOR,
+                    $this->kernelCacheDir . DIRECTORY_SEPARATOR . 'phpqr' . DIRECTORY_SEPARATOR,
+                    $this->kernelLogDir . DIRECTORY_SEPARATOR . 'phpqr' . DIRECTORY_SEPARATOR,
                 );
 
                 Encode::png($text, $file, $level, $size, $margin);
@@ -220,7 +210,7 @@ class BarcodeService
         }
 
         if (!$absolute) {
-            $path = DIRECTORY_SEPARATOR.$this->webdir.$this->getTypeDir($type).$this->getBarcodeFilename(
+            $path = DIRECTORY_SEPARATOR.$this->webDir . $this->getTypeDir($type) . $this->getBarcodeFilename(
                 $text,
                 $options
             );
@@ -278,7 +268,7 @@ class BarcodeService
      */
     protected function getAbsolutePath()
     {
-        return $this->webroot.DIRECTORY_SEPARATOR.$this->webdir;
+        return $this->webRoot . DIRECTORY_SEPARATOR . $this->webDir;
     }
 
     /**
