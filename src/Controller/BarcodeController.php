@@ -87,6 +87,9 @@ class BarcodeController extends AbstractController
         );
     }
 
+    /**
+     * @param bool $useOverlay deprecated
+     */
     public function downloadBarcode(
         string $type,
         int $level = 0,
@@ -95,11 +98,12 @@ class BarcodeController extends AbstractController
         bool $useOverlay = false,
         string $enctext
     ): Response {
+
         $options = [
             'level' => $level,
             'size' => $size,
             'margin' => $margin,
-            'useOverlay' => $useOverlay,
+            'useOverlay' => $useOverlay, //deprecated
         ];
 
         return new Response(

@@ -6,7 +6,7 @@ class BarcodeTypes
 {
     /**
      * Barcode Types
-     * Zend_Barcode::factory will try to get the renderer, (numeric)
+     * Barcode::factory will try to get the renderer, (numeric)
      * If none is found local additional renders will be tried.
      *
      * @see \Laminas\Barcode\ObjectPluginManager::$aliases
@@ -31,7 +31,6 @@ class BarcodeTypes
         15 => 'royalmail',
         16 => 'upca',
         17 => 'upce',
-        'qr' => 'qr',
     ];
 
     /**
