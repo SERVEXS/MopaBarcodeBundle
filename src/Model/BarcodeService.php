@@ -92,9 +92,12 @@ class BarcodeService
         return $filename;
     }
 
-    protected function getTypeDir(int $type): string
+    /**
+     * @param int|string $type
+     */
+    protected function getTypeDir($type): string
     {
-        if ($type) {
+        if (is_numeric($type)) {
             $type = $this->types[$type];
         }
 
