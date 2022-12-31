@@ -2,9 +2,7 @@
 
 ## Introduction
 
-MopaBarcodeBundle integrates Zend_Barcode and PHP QR Lib to be easily used in symfony2 via twig.
-I did include phpqrcode form  http://sourceforge.net/projects/phpqrcode/ due to changes in its config.
-Is just a shot and shouldnt be considered to be perfect. Feel free to fork and PR.
+MopaBarcodeBundle integrates Laminas/Barcode to be easily used in Symfony via twig.
 
 ## Prerequisites
 
@@ -16,10 +14,10 @@ Is just a shot and shouldnt be considered to be perfect. Feel free to fork and P
     "require": {
         // ...
         "mopa-liip/barcode-bundle": "dev-master",
-        "liip/imagine-bundle": "1.6.x-dev", // handles image installation via requirements
-        // if you want to use the zend barcodes
-        "zendframework/zend-barcode": "~2.3.7",
-        "zendframework/zend-servicemanager": "~2.3.7",
+    
+        // if you want to use the laminas barcodes
+        "laminas/laminas-barcode": "~2.3.7",
+        "laminas/laminas-servicemanager": "~2.3.7",
         // optionally for playground
         "mopa/bootstrap-sandbox-bundle": "dev-master"
         // also read the readme:
@@ -69,7 +67,7 @@ And try http://{yoursymfonyapp}/mopa/barcode/playground
 Have a look into the https://github.com/phiamo/MopaBarcodeBundle/blob/master/Controller/BarcodeController.php
 to see it in action
 
-Supported Barcode Types depend on your Zend2 installation
+Supported Barcode Types depend on your laminas installation
 
 If you installed it have a look into
 https://github.com/phiamo/MopaBarcodeBundle/blob/master/Model/BarcodeTypes.php
@@ -94,7 +92,7 @@ There is also a twig helper registered:
         <p><img alt="[barcode]" src="{{ mopa_barcode_url('code128', '123456789', {'barcodeOptions': {}, 'rendererOptions': {}}) }}"></p>
 ```
 
-Of course the dict (3rd parameter is optional) have a look into http://framework.zend.com/manual/2.1/en/modules/zend.barcode.creation.html
+Of course the dict (3rd parameter is optional) have a look into [https://docs.laminas.dev/laminas-barcode/usage/](https://docs.laminas.dev/laminas-barcode/usage/)
 to see what options can be set.
 
 the dict also takes a noCache boolean, i wont explain it further
@@ -118,24 +116,6 @@ my_barcode_display:
 And just use Urls to generate your barcodes:
 
 http://{yoursymfonyapp}/mopa/barcode/send/{type}/{enctext}
-
-## Using QR code overlays
-
-Add this to twig template.
-
-``` jinja
-    <img src="{{ mopa_barcode_url('qr', "Text to put in QR code", {'size':2, 'level':3, 'margin':0, 'useOverlay': true}) }}"/>
-```
-
-### Changing overlay images
-
-Add and edit this to your config.yml file.
-
-    mopa_barcode:
-        overlay_images_path: "%kernel.root_dir%/Resources/qr_overlays"
-
-For each QR code level (size) you have to generate overlay image. Look in `Resources/qr_overlays' path of bundle for example overlay images.
-
 
 ## TODO
 

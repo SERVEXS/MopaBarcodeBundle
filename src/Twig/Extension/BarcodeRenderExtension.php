@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Twig extension for barcodes
+ * Twig extension for barcodes.
  *
  * @author Philipp A. Mohrenweiser<phiamo@googlemail.com>
  * @copyright 2011 Philipp Mohrenweiser
@@ -13,35 +13,25 @@ namespace Mopa\Bundle\BarcodeBundle\Twig\Extension;
 use Mopa\Bundle\BarcodeBundle\Model\BarcodeService;
 use Twig\TwigFunction;
 
-/**
- * Class BarcodeRenderExtension
- * @package Mopa\Bundle\BarcodeBundle\Twig\Extension
- */
 class BarcodeRenderExtension extends \Twig_Extension
 {
-    /**
-     * @var BarcodeService
-     */
-    protected $bs;
+    protected BarcodeService $barcodeService;
 
-    /**
-     * @param BarcodeService $bs
-     */
-    public function __construct(BarcodeService $bs)
+    public function __construct(BarcodeService $barcodeService)
     {
-        $this->bs = $bs;
+        $this->barcodeService = $barcodeService;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
-    public function getName()
+    public function getName(): string
     {
         return 'dimass_barcode_render';
     }
 
     /**
-     * @return array
+     * @inheritDoc
      */
     public function getFunctions(): array
     {
@@ -54,6 +44,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param $type
      * @param $text
      * @param array $options
+     *
      * @return mixed|string
      */
     public function url($type, $text, $options = [])
@@ -65,6 +56,7 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param $type
      * @param $text
      * @param array $options
+     *
      * @return mixed|string
      */
     public function path($type, $text, $options = [])
@@ -77,11 +69,11 @@ class BarcodeRenderExtension extends \Twig_Extension
      * @param $text
      * @param $absolute
      * @param array $options
+     *
      * @return mixed|string
      */
     protected function get($type, $text, $absolute, $options = [])
     {
-        return $this->bs->get($type, urlencode($text), $absolute, $options);
+        return $this->barcodeService->get($type, urlencode($text), $absolute, $options);
     }
-
 }
