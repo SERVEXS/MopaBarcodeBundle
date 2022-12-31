@@ -32,7 +32,6 @@
         "laminas/laminas-barcode": "^2.6",
         "laminas/laminas-validator": "^2.8",
         "laminas/laminas-servicemanager": "^3.1",
-        "twig/twig": "~1.14",
         "ext-gd": "*",
         "ext-zlib": "*"
     },
