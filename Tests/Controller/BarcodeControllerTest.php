@@ -1,12 +1,13 @@
 <?php
-namespace Mopa\BootstrapBundle\Tests\Controller;
+
+namespace Mopa\BarcodeBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class BarcodeController extends WebTestCase
+class BarcodeControllerTest extends WebTestCase
 {
     public function testTest()
     {
-        $this->assertTrue(True, 'Wow');
+        $this->assertTrue(true, 'Wow');
     }
 }
