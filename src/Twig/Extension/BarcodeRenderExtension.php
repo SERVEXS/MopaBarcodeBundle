@@ -11,9 +11,10 @@
 namespace Mopa\Bundle\BarcodeBundle\Twig\Extension;
 
 use Mopa\Bundle\BarcodeBundle\Model\BarcodeService;
+use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class BarcodeRenderExtension extends \Twig_Extension
+class BarcodeRenderExtension extends AbstractExtension
 {
     protected BarcodeService $barcodeService;
 
@@ -22,17 +23,11 @@ class BarcodeRenderExtension extends \Twig_Extension
         $this->barcodeService = $barcodeService;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getName(): string
     {
         return 'dimass_barcode_render';
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getFunctions(): array
     {
         return [
@@ -41,8 +36,6 @@ class BarcodeRenderExtension extends \Twig_Extension
     }
 
     /**
-     * @param $type
-     * @param $text
      * @param array $options
      *
      * @return mixed|string
@@ -53,8 +46,6 @@ class BarcodeRenderExtension extends \Twig_Extension
     }
 
     /**
-     * @param $type
-     * @param $text
      * @param array $options
      *
      * @return mixed|string
@@ -65,9 +56,6 @@ class BarcodeRenderExtension extends \Twig_Extension
     }
 
     /**
-     * @param $type
-     * @param $text
-     * @param $absolute
      * @param array $options
      *
      * @return mixed|string
