@@ -24,10 +24,10 @@
         }
     },
     "require": {
-        "php": ">=7.4",
-        "symfony/framework-bundle": "^4.4|^5.4",
-        "symfony/twig-bundle": "^4.4|^5.4",
-        "symfony/form": "^4.4|^5.4",
+        "php": ">=8.2",
+        "symfony/framework-bundle": "^5.4|^6.0",
+        "symfony/twig-bundle": "^5.4|^6.0",
+        "symfony/form": "^5.4|^6.0",
         "imagine/imagine": "^1.0",
         "laminas/laminas-barcode": "^2.6",
         "laminas/laminas-validator": "^2.8",

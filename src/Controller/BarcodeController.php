@@ -12,14 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BarcodeController extends AbstractController
 {
-    private FormFactoryInterface $formFactory;
-
-    private BarcodeService $barcodeService;
-
-    public function __construct(FormFactoryInterface $formFactory, BarcodeService $barcodeService)
-    {
-        $this->formFactory = $formFactory;
-        $this->barcodeService = $barcodeService;
+    public function __construct(
+        private readonly FormFactoryInterface $formFactory,
+        private readonly BarcodeService $barcodeService
+    ) {
     }
 
     /**
@@ -89,11 +85,11 @@ class BarcodeController extends AbstractController
      */
     public function downloadBarcode(
         string $type,
+        string $enctext,
         int $level = 0,
         int $size = 3,
         int $margin = 4,
-        bool $useOverlay = false,
-        string $enctext
+        bool $useOverlay = false
     ): Response {
         $options = [
             'level' => $level,

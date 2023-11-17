@@ -16,11 +16,8 @@ use Twig\TwigFunction;
 
 class BarcodeRenderExtension extends AbstractExtension
 {
-    protected BarcodeService $barcodeService;
-
-    public function __construct(BarcodeService $barcodeService)
+    public function __construct(protected BarcodeService $barcodeService)
     {
-        $this->barcodeService = $barcodeService;
     }
 
     public function getName(): string
@@ -31,7 +28,7 @@ class BarcodeRenderExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('mopa_barcode_url', [$this, 'url']),
+            new TwigFunction('mopa_barcode_url', $this->url(...)),
         ];
     }
 
@@ -62,6 +59,6 @@ class BarcodeRenderExtension extends AbstractExtension
      */
     protected function get($type, $text, $absolute, $options = [])
     {
-        return $this->barcodeService->get($type, urlencode($text), $absolute, $options);
+        return $this->barcodeService->get($type, urlencode((string) $text), $absolute, $options);
     }
 }
