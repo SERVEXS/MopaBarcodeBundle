@@ -10,8 +10,8 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__ . '/Tests',
     ]);
     $rectorConfig->sets([
-//        \Rector\Symfony\Set\SymfonyLevelSetList::UP_TO_SYMFONY_50,
+        \Rector\Symfony\Set\SymfonyLevelSetList::UP_TO_SYMFONY_63,
 //    \Rector\Symfony\Set\TwigLevelSetList::UP_TO_TWIG_240,
-        \Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_74,
+//        \Rector\Set\ValueObject\LevelSetList::UP_TO_PHP_82,
     ]);
 };

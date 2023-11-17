@@ -14,17 +14,11 @@ class BarcodeService
      */
     private array $types;
 
-    private string $webDir;
-
-    private string $webRoot;
-
     public function __construct(
-        string $webDir,
-        string $webRoot
+        private readonly string $webDir,
+        private readonly string $webRoot
     ) {
         $this->types = BarcodeTypes::getTypes();
-        $this->webDir = $webDir;
-        $this->webRoot = $webRoot;
     }
 
     public function saveAs($type, $text, $file, array $options = []): bool
