@@ -29,7 +29,7 @@ class BarcodeService
                 throw new \InvalidArgumentException('QR code is not supported anymore!');
             case is_numeric($type):
                 $type = $this->types[$type];
-            // no break
+                // no break
             default:
                 $barcodeOptions = array_merge($options['barcodeOptions'] ?? [], ['text' => $text]);
                 $rendererOptions = $options['rendererOptions'] ?? [];
@@ -67,9 +67,9 @@ class BarcodeService
 
         if (!$absolute) {
             $path = DIRECTORY_SEPARATOR . $this->webDir . $this->getTypeDir($type) . $this->getBarcodeFilename(
-                    $text,
-                    $options
-                );
+                $text,
+                $options
+            );
 
             return str_replace(DIRECTORY_SEPARATOR, '/', $path);
         }
