@@ -24,29 +24,31 @@
         }
     },
     "require": {
-        "php": ">=7.4",
-        "symfony/framework-bundle": "^3.0|^4.4",
-        "symfony/twig-bundle": "~3.1|^4.4",
-        "symfony/form": "~3.1|^4.4",
+        "php": ">=8.2",
+        "symfony/framework-bundle": "^5.4|^6.0",
+        "symfony/twig-bundle": "^5.4|^6.0",
+        "symfony/form": "^5.4|^6.0",
         "imagine/imagine": "^1.0",
         "laminas/laminas-barcode": "^2.6",
         "laminas/laminas-validator": "^2.8",
         "laminas/laminas-servicemanager": "^3.1",
-        "twig/twig": "~1.14",
         "ext-gd": "*",
         "ext-zlib": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~9.5",
-        "symplify/easy-coding-standard": "^10.2"
+        "rector/rector": "^0.18.5",
+        "friendsofphp/php-cs-fixer": "^3.35.1"
     },
     "suggest": {
         "symfony/monolog-bundle": "^1.0"
     },
     "scripts": {
         "tests": "phpunit tests",
-        "lint-dry": "ecs check src",
-        "lint": "ecs check src --fix"
+        "rector": "rector process",
+        "rector:dry": "rector process --dry-run",
+        "cs-fix": "php-cs-fixer fix --verbose",
+        "cs-fix:dry": "php-cs-fixer fix --dry-run"
     },
     "extra": {
         "branch-alias": {

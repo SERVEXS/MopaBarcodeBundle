@@ -14,19 +14,16 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class MopaBarcodeExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
         foreach ($config as $p => $v) {
-            $container->setParameter($this->getAlias().'.'.$p, $v);
+            $container->setParameter($this->getAlias() . '.' . $p, $v);
         }
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.xml');
     }
 }
