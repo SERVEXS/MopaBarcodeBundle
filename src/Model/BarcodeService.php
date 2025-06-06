@@ -14,17 +14,11 @@ class BarcodeService
      */
     private array $types;
 
-    private string $webDir;
-
-    private string $webRoot;
-
     public function __construct(
-        string $webDir,
-        string $webRoot
+        private readonly string $webDir,
+        private readonly string $webRoot
     ) {
         $this->types = BarcodeTypes::getTypes();
-        $this->webDir = $webDir;
-        $this->webRoot = $webRoot;
     }
 
     public function saveAs($type, $text, $file, array $options = []): bool
@@ -35,7 +29,7 @@ class BarcodeService
                 throw new \InvalidArgumentException('QR code is not supported anymore!');
             case is_numeric($type):
                 $type = $this->types[$type];
-            // no break
+                // no break
             default:
                 $barcodeOptions = array_merge($options['barcodeOptions'] ?? [], ['text' => $text]);
                 $rendererOptions = $options['rendererOptions'] ?? [];
@@ -73,9 +67,9 @@ class BarcodeService
 
         if (!$absolute) {
             $path = DIRECTORY_SEPARATOR . $this->webDir . $this->getTypeDir($type) . $this->getBarcodeFilename(
-                    $text,
-                    $options
-                );
+                $text,
+                $options
+            );
 
             return str_replace(DIRECTORY_SEPARATOR, '/', $path);
         }
