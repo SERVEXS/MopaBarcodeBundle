@@ -12,15 +12,10 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('mopa_barcode');
-        $rootNode = method_exists(TreeBuilder::class, 'getRootNode')
-            ? $treeBuilder->getRootNode()
-            : $treeBuilder->root('mopa_barcode');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->children()
                      ->scalarNode('root_dir')->defaultValue('%kernel.project_dir%/public')->end()

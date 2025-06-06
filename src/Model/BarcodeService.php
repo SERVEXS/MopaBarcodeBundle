@@ -6,37 +6,22 @@ use Imagine\Gd\Image;
 use Imagine\Image\Metadata\MetadataBag;
 use Imagine\Image\Palette\RGB as RGBColor;
 use Laminas\Barcode\Barcode;
-use RuntimeException;
 
 class BarcodeService
 {
     /**
      * @var string[]
      */
-    private $types;
-
-    private string $webDir;
-
-    private string $webRoot;
+    private array $types;
 
     public function __construct(
-        string $webDir,
-        string $webRoot
+        private readonly string $webDir,
+        private readonly string $webRoot
     ) {
         $this->types = BarcodeTypes::getTypes();
-        $this->webDir = $webDir;
-        $this->webRoot = $webRoot;
     }
 
-    /**
-     * @param $type
-     * @param $text
-     * @param $file
-     * @param array $options
-     *
-     * @return bool
-     */
-    public function saveAs($type, $text, $file, $options = [])
+    public function saveAs($type, $text, $file, array $options = []): bool
     {
         @unlink($file);
         switch ($type) {
@@ -48,8 +33,8 @@ class BarcodeService
             default:
                 $barcodeOptions = array_merge($options['barcodeOptions'] ?? [], ['text' => $text]);
                 $rendererOptions = $options['rendererOptions'] ?? [];
-                $rendererOptions['width'] = $rendererOptions['width'] ?? 2233;
-                $rendererOptions['height'] = $rendererOptions['height'] ?? 649;
+                $rendererOptions['width'] ??= 2233;
+                $rendererOptions['height'] ??= 649;
                 $palette = new RGBColor();
                 $metaData = new MetadataBag();
                 $imageResource = Barcode::factory($type, 'image', $barcodeOptions, $rendererOptions)->draw();
@@ -64,24 +49,24 @@ class BarcodeService
      * Get a Barcodes Filename
      * Generates it if it's not here.
      *
-     * @param string $type     BarcodeType
-     * @param string $enctext  BarcodeText
-     * @param bool   $absolute get absolute path, default: false
-     * @param array  $options  Options
+     * @param string $type BarcodeType
+     * @param string $enctext BarcodeText
+     * @param bool $absolute get absolute path, default: false
+     * @param array $options Options
      *
      * @return mixed|string
      */
-    public function get($type, $enctext, $absolute = false, $options = [])
+    public function get($type, $enctext, bool $absolute = false, array $options = [])
     {
         $text = urldecode($enctext);
-        $filename = $this->getAbsoluteBarcodeDir($type).$this->getBarcodeFilename($text, $options);
+        $filename = $this->getAbsoluteBarcodeDir($type) . $this->getBarcodeFilename($text, $options);
 
         if ((isset($options['noCache']) && $options['noCache']) || !file_exists($filename)) {
             $this->saveAs($type, $text, $filename, $options);
         }
 
         if (!$absolute) {
-            $path = DIRECTORY_SEPARATOR.$this->webDir . $this->getTypeDir($type) . $this->getBarcodeFilename(
+            $path = DIRECTORY_SEPARATOR . $this->webDir . $this->getTypeDir($type) . $this->getBarcodeFilename(
                 $text,
                 $options
             );
@@ -101,31 +86,26 @@ class BarcodeService
             $type = $this->types[$type];
         }
 
-        return $type.DIRECTORY_SEPARATOR;
+        return $type . DIRECTORY_SEPARATOR;
     }
 
     /**
-     * @param $text
-     * @param $options
-     *
      * @return string
      */
     protected function getBarcodeFilename($text, $options)
     {
-        return sha1($text.serialize($options)).'.png';
+        return sha1($text . serialize($options)) . '.png';
     }
 
     /**
-     * @param $type
-     *
      * @return string
      */
     protected function getAbsoluteBarcodeDir($type)
     {
-        $path = $this->getAbsolutePath().$this->getTypeDir($type);
+        $path = $this->getAbsolutePath() . $this->getTypeDir($type);
         if (!file_exists($path)) {
             if (!mkdir($path, 0777, true) && !is_dir($path)) {
-                throw new RuntimeException(sprintf('Directory "%s" was not created', $path));
+                throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
             }
         }
 
