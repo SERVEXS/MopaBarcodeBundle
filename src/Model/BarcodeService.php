@@ -56,7 +56,7 @@ class BarcodeService
      *
      * @return mixed|string
      */
-    public function get($type, $enctext, bool $absolute = false, array $options = [])
+    public function get($type, $enctext, bool $absolute = false, array $options = []): mixed
     {
         $text = urldecode($enctext);
         $filename = $this->getAbsoluteBarcodeDir($type) . $this->getBarcodeFilename($text, $options);
@@ -92,7 +92,7 @@ class BarcodeService
     /**
      * @return string
      */
-    protected function getBarcodeFilename($text, $options)
+    protected function getBarcodeFilename($text, $options): string
     {
         return sha1($text . serialize($options)) . '.png';
     }
@@ -100,7 +100,7 @@ class BarcodeService
     /**
      * @return string
      */
-    protected function getAbsoluteBarcodeDir($type)
+    protected function getAbsoluteBarcodeDir($type): string
     {
         $path = $this->getAbsolutePath() . $this->getTypeDir($type);
         if (!file_exists($path)) {
@@ -115,7 +115,7 @@ class BarcodeService
     /**
      * @return string
      */
-    protected function getAbsolutePath()
+    protected function getAbsolutePath(): string
     {
         return $this->webRoot . DIRECTORY_SEPARATOR . $this->webDir;
     }
